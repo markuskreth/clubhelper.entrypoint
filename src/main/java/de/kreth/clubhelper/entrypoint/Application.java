@@ -1,4 +1,4 @@
-package org.vaadin.example;
+package de.kreth.clubhelper.entrypoint;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

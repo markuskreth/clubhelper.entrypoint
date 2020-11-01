@@ -1,4 +1,4 @@
-package org.vaadin.example;
+package de.kreth.clubhelper.entrypoint;
 
 public class ClubhelperApp {
 
