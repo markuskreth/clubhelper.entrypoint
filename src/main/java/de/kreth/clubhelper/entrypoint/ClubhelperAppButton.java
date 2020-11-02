@@ -9,7 +9,6 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.dom.Style;
-import com.vaadin.flow.i18n.I18NProvider;
 
 public class ClubhelperAppButton extends Button {
 
@@ -26,14 +25,13 @@ public class ClubhelperAppButton extends Button {
 	this.addClickListener(this::onClick);
 	this.app = Objects.requireNonNull(app);
 	this.logger = LoggerFactory.getLogger(getClass());
-	I18NProvider p;
+	getElement().setProperty("title", app.getUrl());
     }
 
     private void onClick(ClickEvent<Button> ev) {
 	getUI().ifPresent(ui -> {
 	    Page page = ui.getPage();
 	    logger.info("opening {} with uri {}", app.getName(), app.getUrl());
-//	    page.open(app.getUrl(), "_blank");
 	    String js = "window.open(\"" + app.getUrl()
 		    + "\", \"_self\");";
 	    logger.debug("executing js {}", js);
