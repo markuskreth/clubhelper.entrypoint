@@ -94,25 +94,11 @@ public class AppServiceDockerClient implements AppService {
     }
 
     private String extractName(Container c) {
-	if (c.getLabels().containsKey(LABEL_TITLE)) {
-	    return c.getLabels().get(LABEL_TITLE);
-	}
-
-	String[] names = c.getNames();
-	if (names.length > 0) {
-	    return names[0];
-	}
-	return null;
+	return c.getLabels().get(LABEL_TITLE);
     }
 
     boolean filterClubhelperContainer(Container c) {
-	String[] names = c.getNames();
-	for (String name : names) {
-	    if (name.toLowerCase().contains("clubhelper")) {
-		return true;
-	    }
-	}
-	return false;
+	return c.getLabels().containsKey(LABEL_TITLE) && c.getLabels().containsKey(LABEL_APP_URL);
     }
 
 }
