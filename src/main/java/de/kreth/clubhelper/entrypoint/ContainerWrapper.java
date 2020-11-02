@@ -6,12 +6,17 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerConfig;
 import com.github.dockerjava.api.model.ContainerPort;
 
 public class ContainerWrapper {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContainerWrapper.class);
 
     private static final String ENV_VIRTUAL_HOST = "VIRTUAL_HOST";
     private static final String LABEL_TITLE = "TITLE";
@@ -31,8 +36,20 @@ public class ContainerWrapper {
     }
 
     public boolean isClubhelper() {
-	return container.getLabels().containsKey(LABEL_TITLE)
+
+	boolean b = container.getLabels().containsKey(LABEL_TITLE)
 		&& container.getLabels().containsKey(LABEL_APP_URL);
+	if (logger.isDebugEnabled()) {
+	    logger.debug("{} is Clubhelper: {}, Labels: {}", identifier(), b, container.getLabels());
+	}
+	return b;
+    }
+
+    public String identifier() {
+	if (container.getNames().length > 0) {
+	    return container.getNames()[0];
+	}
+	return container.getImageId();
     }
 
     public String getUrl(Function<String, InspectContainerResponse> accessor) {
