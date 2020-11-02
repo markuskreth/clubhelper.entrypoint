@@ -22,6 +22,10 @@ import com.github.dockerjava.core.DockerClientBuilder;
 @Service
 public class AppServiceDockerClient implements AppService {
 
+    private static final String ENV_VIRTUAL_HOST = "VIRTUAL_HOST";
+    private static final String LABEL_TITLE = "TITLE";
+    private static final String LABEL_APP_URL = "APP_URL";
+
     private final Logger logger;
     private final DockerClient dockerClient;
 
@@ -53,14 +57,24 @@ public class AppServiceDockerClient implements AppService {
 
     private String extractVirtualHost(Container c, InspectContainerResponse inspect) {
 
+	if (c.getLabels().containsKey(LABEL_APP_URL)) {
+	    return c.getLabels().get(LABEL_APP_URL);
+	}
+
 	ContainerConfig config = inspect.getConfig();
 	String[] env = config.getEnv();
 	for (String string : env) {
-	    if (string.startsWith("VIRTUAL_HOST")) {
-		return string.substring("VIRTUAL_HOST".length() + 1).trim();
+	    if (string.startsWith(ENV_VIRTUAL_HOST)) {
+		return "http://" + string.substring(ENV_VIRTUAL_HOST.length() + 1).trim();
 	    }
 	}
-	String url = "https://" + getHost();
+	String host = getHost();
+	String url;
+	if ("localhost".equals(host)) {
+	    url = "http://" + host;
+	} else {
+	    url = "https://" + host;
+	}
 	ContainerPort[] ports = c.getPorts();
 	if (ports.length > 0) {
 	    url += ":" + ports[0].getPublicPort();
@@ -80,8 +94,8 @@ public class AppServiceDockerClient implements AppService {
     }
 
     private String extractName(Container c) {
-	if (c.getLabels().containsKey("title")) {
-	    return c.getLabels().get("title");
+	if (c.getLabels().containsKey(LABEL_TITLE)) {
+	    return c.getLabels().get(LABEL_TITLE);
 	}
 
 	String[] names = c.getNames();
