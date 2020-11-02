@@ -47,6 +47,7 @@ public class AppServiceDockerClient implements AppService {
 	InspectContainerResponse inspect = dockerClient.inspectContainerCmd(c.getId()).exec();
 
 	String url = extractVirtualHost(c, inspect);
+
 	return new ClubhelperApp(url, title);
     }
 
@@ -59,7 +60,7 @@ public class AppServiceDockerClient implements AppService {
 		return string.substring("VIRTUAL_HOST".length() + 1).trim();
 	    }
 	}
-	String url = "http://" + getHost();
+	String url = "https://" + getHost();
 	ContainerPort[] ports = c.getPorts();
 	if (ports.length > 0) {
 	    url += ":" + ports[0].getPublicPort();
