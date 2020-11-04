@@ -32,10 +32,7 @@ public class ClubhelperAppButton extends Button {
 	getUI().ifPresent(ui -> {
 	    Page page = ui.getPage();
 	    logger.info("opening {} with uri {}", app.getName(), app.getUrl());
-	    String js = "window.open(\"" + app.getUrl()
-		    + "\", \"_self\");";
-	    logger.debug("executing js {}", js);
-	    page.executeJs(js);
+	    page.open(app.getUrl(), "_self");
 	});
     }
 

@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-       	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.2.RELEASE</version>
+	</parent>
+	
 	<groupId>de.kreth.clubhelper</groupId>
 	<artifactId>clubhelper.entrypoint</artifactId>
 	<name>Grapical Entrypoint for Clubhelper</name>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
+	
 	<properties>
 		<maven.compiler.release>11</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<vaadin.version>14.4.2</vaadin.version>
 	</properties>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.2.RELEASE</version>
-	</parent>
+	
 	<repositories>
-		<!-- The order of definitions matters. Explicitly defining central here to make sure it has the highest priority. -->
+		<!-- The order of definitions matters. Explicitly defining central here 
+			to make sure it has the highest priority. -->
 		<!-- Main Maven repository -->
 		<repository>
 			<id>central</id>
@@ -48,6 +53,7 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -59,13 +65,15 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<!-- Replace artifactId with vaadin-core to use only free components -->
 			<artifactId>vaadin</artifactId>
 			<exclusions>
-				<!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
+				<!-- Webjars are only needed when running in Vaadin 13 compatibility 
+					mode -->
 				<exclusion>
 					<groupId>com.vaadin.webjar</groupId>
 					<artifactId>*</artifactId>
@@ -105,6 +113,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
@@ -125,6 +137,7 @@
 			<version>3.2.5</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
@@ -138,8 +151,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- Clean build and startup time for Vaadin apps sometimes may exceed
-                     the default Spring Boot's 30sec timeout.  -->
+				<!-- Clean build and startup time for Vaadin apps sometimes may exceed 
+					the default Spring Boot's 30sec timeout. -->
 				<configuration>
 					<wait>500</wait>
 					<maxAttempts>240</maxAttempts>
@@ -148,11 +161,8 @@
 					</layers>
 				</configuration>
 			</plugin>
-			<!--
-                Take care of synchronizing java dependencies and imports in
-                package.json and main.js files.
-                It also creates webpack.config.js if not exists yet.
-            -->
+			<!-- Take care of synchronizing java dependencies and imports in package.json 
+				and main.js files. It also creates webpack.config.js if not exists yet. -->
 			<plugin>
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-maven-plugin</artifactId>
