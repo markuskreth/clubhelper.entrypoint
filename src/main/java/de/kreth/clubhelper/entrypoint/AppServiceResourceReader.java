@@ -31,6 +31,7 @@ public class AppServiceResourceReader implements AppService {
 		new FileReader(file))) {
 
 	    return in.lines()
+		    .filter(l -> !l.isBlank() && !l.startsWith("#") && !l.startsWith(";"))
 		    .map(this::lineToApp)
 		    .collect(Collectors.toList());
 
