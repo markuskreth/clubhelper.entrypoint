@@ -56,4 +56,13 @@ public class AppServiceDockerClient implements AppService {
 	return new ClubhelperApp(c.getUrl(inspectAccessor), c.getTitle());
     }
 
+    @Override
+    public boolean isEditable() {
+	return false;
+    }
+
+    @Override
+    public void update(List<ClubhelperApp> apps) {
+    }
+
 }

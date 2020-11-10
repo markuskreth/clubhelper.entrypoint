@@ -40,8 +40,22 @@ public class AppServiceResourceReader implements AppService {
 	}
     }
 
+    public String getPropertyPath() {
+	return propertyPath;
+    }
+
     private ClubhelperApp lineToApp(String line) {
 	String[] values = line.split(";");
 	return new ClubhelperApp(values[1], values[0]);
+    }
+
+    @Override
+    public boolean isEditable() {
+	return true;
+    }
+
+    @Override
+    public void update(List<ClubhelperApp> apps) {
+
     }
 }
