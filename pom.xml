@@ -13,7 +13,7 @@
 	<groupId>de.kreth.clubhelper</groupId>
 	<artifactId>clubhelper.entrypoint</artifactId>
 	<name>Grapical Entrypoint for Clubhelper</name>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>jar</packaging>
 	
 	<properties>
