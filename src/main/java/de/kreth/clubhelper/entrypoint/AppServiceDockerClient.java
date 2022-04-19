@@ -21,48 +21,46 @@ import com.github.dockerjava.core.DockerClientBuilder;
 @ConditionalOnProperty(value = "docker.client.enabled", havingValue = "true", matchIfMissing = false)
 public class AppServiceDockerClient implements AppService {
 
-    private final Logger logger;
-    private final DockerClient dockerClient;
+	private final Logger logger;
+	private final DockerClient dockerClient;
 
-    @Value("${host:'unix://var/run/docker.sock'}")
-    private String host;
+	@Value("${host:'unix://var/run/docker.sock'}")
+	private String host;
 
-    public AppServiceDockerClient() {
-	logger = LoggerFactory.getLogger(getClass());
-	logger.info("Using docker host: {}", host);
-	Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder();
-	if (host != null && !host.trim().isEmpty()) {
-	    configBuilder.withDockerHost(host);
+	public AppServiceDockerClient() {
+		logger = LoggerFactory.getLogger(getClass());
+		logger.info("Using docker host: {}", host);
+		Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder();
+		if (host != null && !host.trim().isEmpty()) {
+			configBuilder.withDockerHost(host);
+		}
+		DefaultDockerClientConfig config = configBuilder.build();
+		dockerClient = DockerClientBuilder.getInstance(config).build();
+		logger.debug("Successfully initialized " + getClass().getName());
 	}
-	DefaultDockerClientConfig config = configBuilder.build();
-	dockerClient = DockerClientBuilder.getInstance(config).build();
 
-    }
+	@Override
+	public List<ClubhelperApp> getAllRegisteredApps() {
+		List<Container> containers = dockerClient.listContainersCmd().exec();
+		List<ClubhelperApp> collect = containers.stream().map(ContainerWrapper::new)
+				.filter(ContainerWrapper::isClubhelper).map(this::createApp).collect(Collectors.toList());
+		logger.info("found apps: {}", collect.size());
+		return collect;
+	}
 
-    @Override
-    public List<ClubhelperApp> getAllRegisteredApps() {
-	List<Container> containers = dockerClient.listContainersCmd().exec();
-	List<ClubhelperApp> collect = containers.stream()
-		.map(ContainerWrapper::new)
-		.filter(ContainerWrapper::isClubhelper)
-		.map(this::createApp)
-		.collect(Collectors.toList());
-	logger.info("found apps: {}", collect.size());
-	return collect;
-    }
+	ClubhelperApp createApp(ContainerWrapper c) {
+		Function<String, InspectContainerResponse> inspectAccessor = id -> dockerClient.inspectContainerCmd(id).exec();
+		return new ClubhelperApp(c.getUrl(inspectAccessor), c.getTitle());
+	}
 
-    ClubhelperApp createApp(ContainerWrapper c) {
-	Function<String, InspectContainerResponse> inspectAccessor = id -> dockerClient.inspectContainerCmd(id).exec();
-	return new ClubhelperApp(c.getUrl(inspectAccessor), c.getTitle());
-    }
+	@Override
+	public boolean isEditable() {
+		return false;
+	}
 
-    @Override
-    public boolean isEditable() {
-	return false;
-    }
-
-    @Override
-    public void update(List<ClubhelperApp> apps) {
-    }
+	@Override
+	public void update(List<ClubhelperApp> apps) {
+		throw new UnsupportedOperationException(getClass() + " Apps are not editable. Not supported.");
+	}
 
 }
