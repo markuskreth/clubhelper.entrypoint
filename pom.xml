@@ -232,4 +232,10 @@
 			</build>
 		</profile>
 	</profiles>
+	
+	<scm>
+		<url>scm:git:https://github.com/markuskreth/clubhelper.entrypoint.git</url>
+		<developerConnection>scm:git:https://github.com/markuskreth/clubhelper.entrypoint.git</developerConnection>
+		<connection>scm:git:https://github.com/markuskreth/clubhelper.entrypoint.git</connection>
+	</scm>
 </project>
